@@ -1,5 +1,7 @@
 package org.example.bankingsystem.controller;
 
+import org.example.bankingsystem.dto.LoginResponse;
+import org.example.bankingsystem.dto.LoginRequest;
 import org.example.bankingsystem.dto.SignupRequest;
 import org.example.bankingsystem.dto.SignupResponse;
 import org.example.bankingsystem.model.Customer;
@@ -34,4 +36,16 @@ public class CustomerController {
         );
         return new ResponseEntity<>(signupResponse, HttpStatus.CREATED);
     }
+
+    @PostMapping("login")
+    public ResponseEntity<LoginResponse> loginCustomer(@RequestBody LoginRequest loginRequest) {
+        if (customerService.verifyCustomer(loginRequest)) {
+            LoginResponse loginResponse = new LoginResponse("SUCCESS", "Login successful");
+            return new ResponseEntity<>(loginResponse, HttpStatus.OK);
+        } else {
+            LoginResponse loginResponse = new LoginResponse("FAILED", "Invalid email or password");
+            return new ResponseEntity<>(loginResponse, HttpStatus.UNAUTHORIZED);
+        }
+    }
+
 }
