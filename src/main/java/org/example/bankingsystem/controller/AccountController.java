@@ -1,8 +1,11 @@
 package org.example.bankingsystem.controller;
 
 import org.example.bankingsystem.dto.request.CreateAccountRequest;
+import org.example.bankingsystem.dto.request.DepositRequest;
 import org.example.bankingsystem.dto.response.CreateAccountResponse;
+import org.example.bankingsystem.dto.response.DepositResponse;
 import org.example.bankingsystem.dto.response.ViewAccountResponse;
+import org.example.bankingsystem.exceptions.AccountNotFound;
 import org.example.bankingsystem.model.Account;
 import org.example.bankingsystem.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,5 +60,22 @@ public class AccountController {
         }
 
         return new ResponseEntity<>(viewAccountResponseList, HttpStatus.OK);
+    }
+
+    @PostMapping("/{accountNumber}/deposit")
+    public ResponseEntity<DepositResponse> deposit(@PathVariable String accountNumber, @RequestBody DepositRequest depositRequest) {
+
+        if (accountNumber.length() != 13 || depositRequest.getAmount() <= 0) {
+            return new ResponseEntity<>(new DepositResponse(0.0, "Invalid account number or amount"), HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            Account account = accountService.deposit(accountNumber, depositRequest.getAmount());
+            return new ResponseEntity<>(new DepositResponse(
+             account.getBalance(), "Amount deposited successfully"
+            ), HttpStatus.OK);
+        } catch (AccountNotFound e) {
+            return new ResponseEntity<>(new DepositResponse(0.0, e.getMessage()), HttpStatus.NOT_FOUND);
+        }
     }
 }
