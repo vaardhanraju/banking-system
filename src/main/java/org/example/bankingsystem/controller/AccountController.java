@@ -1,6 +1,7 @@
 package org.example.bankingsystem.controller;
 
 import org.example.bankingsystem.dto.request.CreateAccountRequest;
+import org.example.bankingsystem.dto.response.CreateAccountResponse;
 import org.example.bankingsystem.dto.response.ViewAccountResponse;
 import org.example.bankingsystem.model.Account;
 import org.example.bankingsystem.service.AccountService;
@@ -17,21 +18,17 @@ public class AccountController {
     public AccountService accountService;
 
     @PostMapping("/create/{customerID}")
-    public ResponseEntity<?> createAccount(@PathVariable Integer customerID, @RequestBody CreateAccountRequest createAccountRequest) {
+    public ResponseEntity<CreateAccountResponse> createAccount(@PathVariable Integer customerID, @RequestBody CreateAccountRequest createAccountRequest) {
         Account account = accountService.addAccount(customerID, createAccountRequest);
 
         if (account == null) {
-            return new ResponseEntity<>("Failed to create account", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new CreateAccountResponse(
+                    "FAILED", "Failed to create account"
+            ), HttpStatus.BAD_REQUEST);
         }
 
-        ViewAccountResponse viewAccountResponse = new ViewAccountResponse(
-                account.getAccountNumber(),
-                account.getBalance(),
-                account.getAccountType(),
-                account.getAccountStatus(),
-                account.getDateCreated()
-        );
-
-        return new ResponseEntity<>(viewAccountResponse, HttpStatus.CREATED);
+        return new ResponseEntity<>(new CreateAccountResponse(
+                "SUCCESS", "Account created successfully"
+        ), HttpStatus.CREATED);
     }
 }
