@@ -1,4 +1,4 @@
-package org.example.bankingsystem.dto;
+package org.example.bankingsystem.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,13 +7,13 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class SignupRequest {
+@AllArgsConstructor
+public class SignupResponse {
 
+    private Integer id;
     private String name;
     private String email;
     private LocalDate dateOfBirth;
     private String address;
-    private String password;
 }

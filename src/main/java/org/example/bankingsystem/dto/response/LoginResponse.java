@@ -1,4 +1,4 @@
-package org.example.bankingsystem.dto;
+package org.example.bankingsystem.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

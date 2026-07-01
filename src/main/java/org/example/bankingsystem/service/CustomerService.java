@@ -1,6 +1,6 @@
 package org.example.bankingsystem.service;
 
-import org.example.bankingsystem.dto.LoginRequest;
+import org.example.bankingsystem.dto.request.LoginRequest;
 import org.example.bankingsystem.model.Customer;
 import org.example.bankingsystem.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;

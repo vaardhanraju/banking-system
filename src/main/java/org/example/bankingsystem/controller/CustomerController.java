@@ -1,9 +1,9 @@
 package org.example.bankingsystem.controller;
 
-import org.example.bankingsystem.dto.LoginResponse;
-import org.example.bankingsystem.dto.LoginRequest;
-import org.example.bankingsystem.dto.SignupRequest;
-import org.example.bankingsystem.dto.SignupResponse;
+import org.example.bankingsystem.dto.response.LoginResponse;
+import org.example.bankingsystem.dto.request.LoginRequest;
+import org.example.bankingsystem.dto.request.SignupRequest;
+import org.example.bankingsystem.dto.response.SignupResponse;
 import org.example.bankingsystem.model.Customer;
 import org.example.bankingsystem.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
