@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class AccountService {
@@ -45,5 +46,9 @@ public class AccountService {
         account.setDateCreated(LocalDate.now());
 
         return accountRepository.save(account);
+    }
+
+    public List<Account> findAccountByCustomerId(Integer customerID) {
+        return accountRepository.findByCustomerId(customerID);
     }
 }

@@ -10,6 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @RequestMapping("/accounts")
 public class AccountController {
@@ -30,5 +33,29 @@ public class AccountController {
         return new ResponseEntity<>(new CreateAccountResponse(
                 "SUCCESS", "Account created successfully"
         ), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/view/{customerID}")
+    public ResponseEntity<?> viewAccounts(@PathVariable Integer customerID) {
+        List<Account> accounts = accountService.findAccountByCustomerId(customerID);
+
+        if (accounts == null) {
+            return new ResponseEntity<>("No accounts associated with this ID", HttpStatus.NOT_FOUND);
+        }
+
+        List<ViewAccountResponse> viewAccountResponseList = new ArrayList<>();
+
+        for (Account account: accounts) {
+            ViewAccountResponse viewAccountResponse = new ViewAccountResponse(
+                    account.getAccountNumber(),
+                    account.getBalance(),
+                    account.getAccountType(),
+                    account.getAccountStatus(),
+                    account.getDateCreated()
+            );
+            viewAccountResponseList.add(viewAccountResponse);
+        }
+
+        return new ResponseEntity<>(viewAccountResponseList, HttpStatus.OK);
     }
 }
