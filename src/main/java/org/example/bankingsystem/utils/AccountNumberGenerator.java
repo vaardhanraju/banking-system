@@ -33,7 +33,7 @@ public class AccountNumberGenerator {
     }
 
     public boolean validateAccountNumber(String generatedNumber) {
-        Account account = accountRepository.findByAccountNumber(generatedNumber);
+        Account account = accountRepository.findByAccountNumber(generatedNumber).orElse(null);
         return account != null;
     }
 }
