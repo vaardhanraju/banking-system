@@ -9,5 +9,4 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DepositResponse {
     private Double balance;
-    private String message;
 }

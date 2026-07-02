@@ -73,7 +73,7 @@ public class AccountService {
         Double existingBalance = account.getBalance();
 
         if (existingBalance - amount < 0)
-            throw new InsufficientBalanceException("Insufficient Funds. Balance: " + existingBalance);
+            throw new InsufficientBalanceException("Balance: " + existingBalance);
 
         account.setBalance(existingBalance - amount);
 
