@@ -1,7 +1,7 @@
 package org.example.bankingsystem.exceptions;
 
-public class AccountNotFound extends RuntimeException {
-    public AccountNotFound(String message) {
+public class AccountNotFoundException extends RuntimeException {
+    public AccountNotFoundException(String message) {
         super(message);
     }
 }

@@ -2,10 +2,13 @@ package org.example.bankingsystem.controller;
 
 import org.example.bankingsystem.dto.request.CreateAccountRequest;
 import org.example.bankingsystem.dto.request.DepositRequest;
+import org.example.bankingsystem.dto.request.WithdrawRequest;
 import org.example.bankingsystem.dto.response.CreateAccountResponse;
 import org.example.bankingsystem.dto.response.DepositResponse;
 import org.example.bankingsystem.dto.response.ViewAccountResponse;
-import org.example.bankingsystem.exceptions.AccountNotFound;
+import org.example.bankingsystem.dto.response.WithdrawResponse;
+import org.example.bankingsystem.exceptions.AccountNotFoundException;
+import org.example.bankingsystem.exceptions.InsufficientBalanceException;
 import org.example.bankingsystem.model.Account;
 import org.example.bankingsystem.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,8 +77,23 @@ public class AccountController {
             return new ResponseEntity<>(new DepositResponse(
              account.getBalance(), "Amount deposited successfully"
             ), HttpStatus.OK);
-        } catch (AccountNotFound e) {
+        } catch (AccountNotFoundException e) {
             return new ResponseEntity<>(new DepositResponse(0.0, e.getMessage()), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/{accountNumber}/withdraw")
+    public ResponseEntity<WithdrawResponse> withdraw(@PathVariable String accountNumber, @RequestBody WithdrawRequest withdrawRequest) {
+
+        if (accountNumber.length() != 13 || withdrawRequest.getAmount() <= 0) {
+            return new ResponseEntity<>(new WithdrawResponse("Invalid account number or amount"), HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            Account account = accountService.withdraw(accountNumber, withdrawRequest.getAmount());
+            return new ResponseEntity<>(new WithdrawResponse("Amount withdrawn successfully. Balance: " + account.getBalance()), HttpStatus.OK);
+        } catch (AccountNotFoundException | InsufficientBalanceException e) {
+            return new ResponseEntity<>(new WithdrawResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 }

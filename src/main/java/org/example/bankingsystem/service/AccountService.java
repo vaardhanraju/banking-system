@@ -1,9 +1,9 @@
 package org.example.bankingsystem.service;
 
 import org.example.bankingsystem.dto.request.CreateAccountRequest;
-import org.example.bankingsystem.dto.response.DepositResponse;
 import org.example.bankingsystem.enums.AccountStatus;
-import org.example.bankingsystem.exceptions.AccountNotFound;
+import org.example.bankingsystem.exceptions.AccountNotFoundException;
+import org.example.bankingsystem.exceptions.InsufficientBalanceException;
 import org.example.bankingsystem.model.Account;
 import org.example.bankingsystem.model.Customer;
 import org.example.bankingsystem.repository.AccountRepository;
@@ -56,10 +56,26 @@ public class AccountService {
 
     public Account deposit(String accountNumber, Double amount) {
         Account account = accountRepository.findByAccountNumber(accountNumber)
-                .orElseThrow(() -> new AccountNotFound("Account does not exist: " + accountNumber));
+                .orElseThrow(() -> new AccountNotFoundException("Account does not exist: " + accountNumber));
 
         Double existingBalance = account.getBalance();
         account.setBalance(existingBalance + amount);
+
+        accountRepository.save(account);
+
+        return account;
+    }
+
+    public Account withdraw(String accountNumber, Double amount) {
+        Account account = accountRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new AccountNotFoundException("Account does not exist: " + accountNumber));
+
+        Double existingBalance = account.getBalance();
+
+        if (existingBalance - amount < 0)
+            throw new InsufficientBalanceException("Insufficient Funds. Balance: " + existingBalance);
+
+        account.setBalance(existingBalance - amount);
 
         accountRepository.save(account);
 
