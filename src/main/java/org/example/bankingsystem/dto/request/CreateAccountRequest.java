@@ -5,10 +5,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.example.bankingsystem.enums.AccountType;
 
+import java.math.BigDecimal;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateAccountRequest {
     private AccountType accountType;
-    private Double balance;
+    private BigDecimal balance;
 }
