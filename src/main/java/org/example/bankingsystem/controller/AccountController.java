@@ -42,12 +42,8 @@ public class AccountController {
     }
 
     @GetMapping("/view/{customerID}")
-    public ResponseEntity<?> viewAccounts(@PathVariable Integer customerID) {
+    public ResponseEntity<ApiResponse<List<ViewAccountResponse>>> viewAccounts(@PathVariable Integer customerID) {
         List<Account> accounts = accountService.findAccountByCustomerId(customerID);
-
-        if (accounts == null) {
-            return new ResponseEntity<>("No accounts associated with this ID", HttpStatus.NOT_FOUND);
-        }
 
         List<ViewAccountResponse> viewAccountResponseList = new ArrayList<>();
 
@@ -62,7 +58,7 @@ public class AccountController {
             viewAccountResponseList.add(viewAccountResponse);
         }
 
-        return new ResponseEntity<>(viewAccountResponseList, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(viewAccountResponseList, "Accounts associated with customer ID"));
     }
 
     @PostMapping("/{accountNumber}/deposit")
@@ -75,10 +71,8 @@ public class AccountController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error("Invalid account number or amount", error));
         }
 
-
         Account account = accountService.deposit(accountNumber, depositRequest.getAmount());
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(new DepositResponse(account.getBalance()),"Amount deposited successfully"));
-
     }
 
     @PostMapping("/{accountNumber}/withdraw")

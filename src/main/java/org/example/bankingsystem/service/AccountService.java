@@ -51,7 +51,12 @@ public class AccountService {
     }
 
     public List<Account> findAccountByCustomerId(Integer customerID) {
-        return accountRepository.findByCustomerId(customerID);
+        List<Account> accounts = accountRepository.findByCustomerId(customerID);
+
+        if (accounts.isEmpty())
+            throw new AccountNotFoundException("No associated accounts found with customer ID: " + customerID);
+
+        return accounts;
     }
 
     public Account deposit(String accountNumber, Double amount) {
