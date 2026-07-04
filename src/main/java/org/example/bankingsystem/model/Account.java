@@ -8,6 +8,7 @@ import org.example.bankingsystem.enums.AccountStatus;
 import org.example.bankingsystem.enums.AccountType;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -35,5 +36,5 @@ public class Account {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    private LocalDate dateCreated;
+    private LocalDateTime dateCreated;
 }
