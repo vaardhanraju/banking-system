@@ -1,5 +1,7 @@
 package org.example.bankingsystem.controller;
 
+import org.example.bankingsystem.dto.ApiError;
+import org.example.bankingsystem.dto.ApiResponse;
 import org.example.bankingsystem.dto.response.LoginResponse;
 import org.example.bankingsystem.dto.request.LoginRequest;
 import org.example.bankingsystem.dto.request.SignupRequest;
@@ -22,7 +24,7 @@ public class CustomerController {
     public CustomerService customerService;
 
     @PostMapping("/signup")
-    public ResponseEntity<SignupResponse> createCustomer(@RequestBody SignupRequest signupRequest) {
+    public ResponseEntity<ApiResponse<SignupResponse>> createCustomer(@RequestBody SignupRequest signupRequest) {
         Customer customer = new Customer();
         customer.setName(signupRequest.getName());
         customer.setEmail(signupRequest.getEmail());
@@ -34,17 +36,15 @@ public class CustomerController {
         SignupResponse signupResponse = new SignupResponse(
                 customerDb.getId(), customerDb.getName(), customerDb.getEmail(), customerDb.getDateOfBirth(), customerDb.getAddress()
         );
-        return new ResponseEntity<>(signupResponse, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(signupResponse, "Account created successfully"));
     }
 
     @PostMapping("login")
-    public ResponseEntity<LoginResponse> loginCustomer(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<ApiResponse<LoginResponse>> loginCustomer(@RequestBody LoginRequest loginRequest) {
         if (customerService.verifyCustomer(loginRequest)) {
-            LoginResponse loginResponse = new LoginResponse("SUCCESS", "Login successful");
-            return new ResponseEntity<>(loginResponse, HttpStatus.OK);
+            return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(null, "Login successful"));
         } else {
-            LoginResponse loginResponse = new LoginResponse("FAILED", "Invalid email or password");
-            return new ResponseEntity<>(loginResponse, HttpStatus.UNAUTHORIZED);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error("INVALID_CREDENTIALS", new ApiError("Invalid password", null)));
         }
     }
 
