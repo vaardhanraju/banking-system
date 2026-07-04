@@ -3,6 +3,7 @@ package org.example.bankingsystem.controller;
 import org.example.bankingsystem.dto.ApiError;
 import org.example.bankingsystem.dto.ApiResponse;
 import org.example.bankingsystem.exceptions.AccountNotFoundException;
+import org.example.bankingsystem.exceptions.CustomerNotFoundException;
 import org.example.bankingsystem.exceptions.InsufficientBalanceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,5 +25,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleInsufficientBalanceException(InsufficientBalanceException exception) {
         ApiError error = new ApiError("INSUFFICIENT_FUNDS", List.of(exception.getMessage()));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error("Insufficient funds", error));
+    }
+
+    @ExceptionHandler(CustomerNotFoundException.class)
+    public ResponseEntity<?> handleCustomerNotFound(CustomerNotFoundException exception) {
+        ApiError error = new ApiError("CUSTOMER_NOT_FOUND", List.of(exception.getMessage()));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error("Customer not found", error));
     }
 }
