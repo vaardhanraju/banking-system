@@ -10,7 +10,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SignupResponse {
-
     private Integer id;
     private String name;
     private String email;

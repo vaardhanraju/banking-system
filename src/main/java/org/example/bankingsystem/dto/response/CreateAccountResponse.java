@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.example.bankingsystem.enums.AccountStatus;
 import org.example.bankingsystem.enums.AccountType;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class CreateAccountResponse {
     private String accountNumber;
-    private Double balance;
+    private BigDecimal balance;
     private AccountType accountType;
     private AccountStatus accountStatus;
     private LocalDateTime dateCreated;

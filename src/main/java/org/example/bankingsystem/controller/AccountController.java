@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,10 +65,14 @@ public class AccountController {
     @PostMapping("/{accountNumber}/deposit")
     public ResponseEntity<ApiResponse<DepositResponse>> deposit(@PathVariable String accountNumber, @RequestBody DepositRequest depositRequest) {
 
-        if (accountNumber.length() != 13 || depositRequest.getAmount() <= 0) {
+        if (accountNumber.length() != 13 ||
+            depositRequest.getAmount() == null ||
+            depositRequest.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
+
             ApiError error = new ApiError(
                     "INVALID_REQUEST", new ArrayList<>()
             );
+
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error("Invalid account number or amount", error));
         }
 
@@ -78,11 +83,16 @@ public class AccountController {
     @PostMapping("/{accountNumber}/withdraw")
     public ResponseEntity<ApiResponse<WithdrawResponse>> withdraw(@PathVariable String accountNumber, @RequestBody WithdrawRequest withdrawRequest) {
 
-        if (accountNumber.length() != 13 || withdrawRequest.getAmount() <= 0) {
+        if (accountNumber.length() != 13 ||
+                withdrawRequest.getAmount() == null ||
+                withdrawRequest.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
+
             ApiError error = new ApiError(
                     "INVALID_REQUEST", new ArrayList<>()
             );
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error("Invalid account number or amount", error));
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error("Invalid account number or amount", error));
         }
 
         Account account = accountService.withdraw(accountNumber, withdrawRequest.getAmount());

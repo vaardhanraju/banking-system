@@ -14,7 +14,7 @@ import org.example.bankingsystem.utils.AccountNumberGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -31,7 +31,7 @@ public class AccountService {
     public AccountRepository accountRepository;
 
     public Account addAccount(Integer customerID, CreateAccountRequest accountRequest) {
-        if (accountRequest.getBalance() <= 0) {
+        if (accountRequest.getBalance().compareTo(BigDecimal.ZERO) <= 0) {
             throw new InvalidAccountRequestException("Initial balance must be greater than 0");
         }
 
@@ -61,28 +61,29 @@ public class AccountService {
         return accounts;
     }
 
-    public Account deposit(String accountNumber, Double amount) {
+    public Account deposit(String accountNumber, BigDecimal amount) {
         Account account = accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new AccountNotFoundException("Account does not exist: " + accountNumber));
 
-        Double existingBalance = account.getBalance();
-        account.setBalance(existingBalance + amount);
+        BigDecimal existingBalance = account.getBalance();
+        account.setBalance(existingBalance.add(amount));
 
         accountRepository.save(account);
 
         return account;
     }
 
-    public Account withdraw(String accountNumber, Double amount) {
+    public Account withdraw(String accountNumber, BigDecimal amount) {
         Account account = accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new AccountNotFoundException("Account does not exist: " + accountNumber));
 
-        Double existingBalance = account.getBalance();
+        BigDecimal existingBalance = account.getBalance();
 
-        if (existingBalance - amount < 0)
+        if (existingBalance.subtract(amount).compareTo(BigDecimal.ZERO) < 0) {
             throw new InsufficientBalanceException("Balance: " + existingBalance);
+        }
 
-        account.setBalance(existingBalance - amount);
+        account.setBalance(existingBalance.subtract(amount));
 
         accountRepository.save(account);
 

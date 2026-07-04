@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import org.example.bankingsystem.enums.AccountStatus;
 import org.example.bankingsystem.enums.AccountType;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -24,7 +24,7 @@ public class Account {
     @Column(unique = true)
     private String accountNumber;
 
-    private Double balance;
+    private BigDecimal balance;
 
     @Enumerated(EnumType.STRING)
     private AccountType accountType;
