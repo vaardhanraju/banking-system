@@ -27,18 +27,18 @@ public class AccountController {
     public AccountService accountService;
 
     @PostMapping("/create/{customerID}")
-    public ResponseEntity<CreateAccountResponse> createAccount(@PathVariable Integer customerID, @RequestBody CreateAccountRequest createAccountRequest) {
+    public ResponseEntity<ApiResponse<CreateAccountResponse>> createAccount(@PathVariable Integer customerID, @RequestBody CreateAccountRequest createAccountRequest) {
         Account account = accountService.addAccount(customerID, createAccountRequest);
 
-        if (account == null) {
-            return new ResponseEntity<>(new CreateAccountResponse(
-                    "FAILED", "Failed to create account"
-            ), HttpStatus.BAD_REQUEST);
-        }
-
-        return new ResponseEntity<>(new CreateAccountResponse(
-                "SUCCESS", "Account created successfully"
-        ), HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(
+                new CreateAccountResponse(
+                        account.getAccountNumber(),
+                        account.getBalance(),
+                        account.getAccountType(),
+                        account.getAccountStatus(),
+                        account.getDateCreated()
+                ),
+                "Account created successfully"));
     }
 
     @GetMapping("/view/{customerID}")

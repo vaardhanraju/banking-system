@@ -3,7 +3,9 @@ package org.example.bankingsystem.service;
 import org.example.bankingsystem.dto.request.CreateAccountRequest;
 import org.example.bankingsystem.enums.AccountStatus;
 import org.example.bankingsystem.exceptions.AccountNotFoundException;
+import org.example.bankingsystem.exceptions.CustomerNotFoundException;
 import org.example.bankingsystem.exceptions.InsufficientBalanceException;
+import org.example.bankingsystem.exceptions.InvalidAccountRequestException;
 import org.example.bankingsystem.model.Account;
 import org.example.bankingsystem.model.Customer;
 import org.example.bankingsystem.repository.AccountRepository;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -29,13 +32,12 @@ public class AccountService {
 
     public Account addAccount(Integer customerID, CreateAccountRequest accountRequest) {
         if (accountRequest.getBalance() <= 0) {
-            return null;
+            throw new InvalidAccountRequestException("Initial balance must be greater than 0");
         }
 
-        Customer customer = customerRepository.findById(customerID).orElse(null);
-        if (customer == null) {
-            return null;
-        }
+        Customer customer = customerRepository.findById(customerID).orElseThrow(
+                () -> new CustomerNotFoundException("No customer associated with this ID")
+        );
 
         String generatedAccountNumber = accountNumberGenerator.generateNumber();
 
@@ -45,7 +47,7 @@ public class AccountService {
         account.setAccountType(accountRequest.getAccountType());
         account.setAccountStatus(AccountStatus.ACTIVE);
         account.setCustomer(customer);
-        account.setDateCreated(LocalDate.now());
+        account.setDateCreated(LocalDateTime.now());
 
         return accountRepository.save(account);
     }
