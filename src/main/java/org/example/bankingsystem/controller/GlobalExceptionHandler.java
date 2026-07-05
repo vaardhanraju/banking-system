@@ -5,6 +5,7 @@ import org.example.bankingsystem.dto.ApiResponse;
 import org.example.bankingsystem.exceptions.AccountNotFoundException;
 import org.example.bankingsystem.exceptions.CustomerNotFoundException;
 import org.example.bankingsystem.exceptions.InsufficientBalanceException;
+import org.example.bankingsystem.exceptions.InvalidAccountRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -28,8 +29,14 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(CustomerNotFoundException.class)
-    public ResponseEntity<?> handleCustomerNotFound(CustomerNotFoundException exception) {
+    public ResponseEntity<?> handleCustomerNotFoundException(CustomerNotFoundException exception) {
         ApiError error = new ApiError("CUSTOMER_NOT_FOUND", List.of(exception.getMessage()));
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error("Customer not found", error));
+    }
+
+    @ExceptionHandler(InvalidAccountRequestException.class)
+    public ResponseEntity<?> handleInvalidAccountRequestException(InvalidAccountRequestException exception) {
+        ApiError error = new ApiError("INVALID_REQUEST", List.of(exception.getMessage()));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error("Invalid account request", error));
     }
 }
